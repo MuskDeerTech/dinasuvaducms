@@ -252,6 +252,7 @@ export interface Post {
         slug?: string | null;
       }[]
     | null;
+  customId: number;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -1166,6 +1167,7 @@ export interface PostsSelect<T extends boolean = true> {
         name?: T;
         slug?: T;
       };
+  customId?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;

@@ -1,6 +1,5 @@
 import type { CheckboxField, TextField } from 'payload'
-
-import { formatSlugHook } from './formatSlug'
+import { formatSlug } from './formatSlug'
 
 type Overrides = {
   slugOverrides?: Partial<TextField>
@@ -31,8 +30,20 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
     label: 'Slug',
     ...(slugOverrides || {}),
     hooks: {
-      // Kept this in for hook or API based updates
-      beforeValidate: [formatSlugHook(fieldToUse)],
+      beforeChange: [
+        ({ data, value, originalDoc }) => {
+          const isUnlocked = !data?.slugLock
+          if (isUnlocked && data?.[fieldToUse] && typeof data[fieldToUse] === 'string') {
+            // Use the manually entered value if it exists and differs from the default generated slug
+            const defaultSlug = formatSlug(data[fieldToUse])
+            const manualSlug = value && typeof value === 'string' ? value : defaultSlug
+            const customId = data?.customId ? `-${data.customId}` : ''
+            return `${manualSlug}${customId}`
+          }
+          // If locked, return the existing value or let it be handled by default
+          return value
+        },
+      ],
     },
     admin: {
       position: 'sidebar',
