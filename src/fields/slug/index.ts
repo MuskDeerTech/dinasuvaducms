@@ -31,7 +31,7 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
     ...(slugOverrides || {}),
     hooks: {
       beforeChange: [
-        ({ data, value, originalDoc }) => {
+        ({ data, value }) => {
           const isUnlocked = !data?.slugLock
           if (isUnlocked && data?.[fieldToUse] && typeof data[fieldToUse] === 'string') {
             // Use the manually entered value if it exists and differs from the default generated slug

@@ -14,7 +14,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
-import { getServerSideURL } from './utilities/getURL'
+// import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
 
 const filename = fileURLToPath(import.meta.url)
@@ -125,7 +125,7 @@ export default buildConfig({
     tasks: [],
   },
   // Debug: Log when Payload is fully initialized
-  onInit: async (payload) => {
+  onInit: async () => {
     console.log('Debug: Payload CMS initialized successfully')
   },
 })

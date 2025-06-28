@@ -15,7 +15,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "types": ["@payloadcms/types"],
+    // "types": ["@payloadcms/types"],
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
