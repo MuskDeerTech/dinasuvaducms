@@ -88,6 +88,7 @@ export default buildConfig({
       // Add valid mongoose connect options here if needed
     },
   }),
+
   collections,
   cors: allowedOrigins,
   csrf: allowedOrigins,

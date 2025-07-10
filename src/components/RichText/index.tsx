@@ -59,7 +59,6 @@ type Props = {
   data: DefaultTypedEditorState
   enableGutter?: boolean
   enableProse?: boolean
-  className?: string
 } & React.HTMLAttributes<HTMLDivElement>
 
 export default function RichText(props: Props) {
