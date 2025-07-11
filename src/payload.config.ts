@@ -18,7 +18,9 @@ import { s3Storage } from '@payloadcms/storage-s3'
 
 // Dynamically set server URL based on environment
 const serverURL =
-  process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : 'http://localhost:3000'
+  process.env.NODE_ENV === 'production'
+    ? 'https://editor.dinasuvadu.com/'
+    : 'https://editor.dinasuvadu.com/'
 process.env.PAYLOAD_PUBLIC_SERVER_URL = serverURL
 process.env.NEXT_PUBLIC_SERVER_URL = serverURL
 
@@ -28,8 +30,8 @@ const dirname = path.dirname(filename)
 // Define the allowed origins dynamically based on the environment
 const allowedOrigins =
   process.env.NODE_ENV === 'production'
-    ? ['http://localhost:3000']
-    : ['http://localhost:3000', 'http://localhost:3001']
+    ? ['https://editor.dinasuvadu.com/']
+    : ['https://editor.dinasuvadu.com/', 'http://localhost:3001']
 
 // Debug: Log collections before initialization
 const collections = [Pages, Posts, Media, Categories, Users, Tags]
