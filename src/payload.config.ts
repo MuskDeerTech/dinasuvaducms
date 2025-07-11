@@ -16,22 +16,31 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 
-// Dynamically set server URL based on environment
+// Dynamically set server URL based on environment for admin panel
 const serverURL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://editor.dinasuvadu.com/'
-    : 'https://editor.dinasuvadu.com/'
+  process.env.NODE_ENV === 'production' && process.env.LOCAL_TEST
+    ? 'http://localhost:3000'
+    : process.env.NODE_ENV === 'production'
+      ? 'https://editor.dinasuvadu.com'
+      : 'http://localhost:3000'
 process.env.PAYLOAD_PUBLIC_SERVER_URL = serverURL
-process.env.NEXT_PUBLIC_SERVER_URL = serverURL
+// NEXT_PUBLIC_SERVER_URL is optional for frontend
+// process.env.NEXT_PUBLIC_SERVER_URL = process.env.NODE_ENV === 'production' ? 'https://sub.dinasuvadu.com' : 'http://localhost:3001';
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Define the allowed origins dynamically based on the environment
 const allowedOrigins =
-  process.env.NODE_ENV === 'production'
-    ? ['https://editor.dinasuvadu.com/']
-    : ['https://editor.dinasuvadu.com/', 'http://localhost:3001']
+  process.env.NODE_ENV === 'production' && process.env.LOCAL_TEST
+    ? [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://editor.dinasuvadu.com',
+        'https://sub.dinasuvadu.com',
+      ]
+    : process.env.NODE_ENV === 'production'
+      ? ['https://editor.dinasuvadu.com', 'https://sub.dinasuvadu.com']
+      : ['http://localhost:3000', 'http://localhost:3001']
 
 // Debug: Log collections before initialization
 const collections = [Pages, Posts, Media, Categories, Users, Tags]
@@ -81,7 +90,6 @@ export default buildConfig({
       // Add valid mongoose connect options here if needed
     },
   }),
-
   collections,
   cors: allowedOrigins,
   csrf: allowedOrigins,
@@ -104,7 +112,6 @@ export default buildConfig({
       acl: 'public-read',
     }),
   ],
-
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
