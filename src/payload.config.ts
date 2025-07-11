@@ -14,8 +14,13 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
-// import { getServerSideURL } from './utilities/getURL'
 import { s3Storage } from '@payloadcms/storage-s3'
+
+// Dynamically set server URL based on environment
+const serverURL =
+  process.env.NODE_ENV === 'production' ? 'http://localhost:3000' : 'http://localhost:3000'
+process.env.PAYLOAD_PUBLIC_SERVER_URL = serverURL
+process.env.NEXT_PUBLIC_SERVER_URL = serverURL
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,27 +28,13 @@ const dirname = path.dirname(filename)
 // Define the allowed origins dynamically based on the environment
 const allowedOrigins =
   process.env.NODE_ENV === 'production'
-    ? ['https://aesthetic-swan-5095dd.netlify.app/p']
+    ? ['http://localhost:3000']
     : ['http://localhost:3000', 'http://localhost:3001']
-
-// Debug: Log environment variables to ensure they're set correctly
-console.log('Debug: Environment Variables Check')
-console.log('NODE_ENV:', process.env.NODE_ENV)
-console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not Set')
-console.log('PAYLOAD_SECRET:', process.env.PAYLOAD_SECRET ? 'Set' : 'Not Set')
-console.log('S3_BUCKET:', process.env.S3_BUCKET ? 'Set' : 'Not Set')
-console.log('S3_ACCESS_KEY_ID:', process.env.S3_ACCESS_KEY_ID ? 'Set' : 'Not Set')
-console.log('S3_SECRET_ACCESS_KEY:', process.env.S3_SECRET_ACCESS_KEY ? 'Set' : 'Not Set')
-console.log('S3_REGION:', process.env.S3_REGION ? 'Set' : 'Not Set')
-console.log('S3_ENDPOINT:', process.env.S3_ENDPOINT ? 'Set' : 'Not Set')
 
 // Debug: Log collections before initialization
 const collections = [Pages, Posts, Media, Categories, Users, Tags]
-console.log('Debug: Collections Before Initialization')
 collections.forEach((collection, index) => {
-  console.log(`Collection ${index}:`, collection?.slug || 'undefined')
   if (!collection || !collection.slug) {
-    console.error(`Error: Collection at index ${index} is invalid:`, collection)
     throw new Error(`Collection at index ${index} is missing a slug`)
   }
 })
@@ -126,9 +117,5 @@ export default buildConfig({
       },
     },
     tasks: [],
-  },
-  // Debug: Log when Payload is fully initialized
-  onInit: async () => {
-    console.log('Debug: Payload CMS initialized successfully')
   },
 })
