@@ -16,16 +16,18 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 
-// Dynamically set server URL based on environment for admin panel
 const serverURL =
   process.env.NODE_ENV === 'production' && process.env.LOCAL_TEST
     ? 'http://localhost:3000'
     : process.env.NODE_ENV === 'production'
       ? 'https://editor.dinasuvadu.com'
       : 'http://localhost:3000'
+
 process.env.PAYLOAD_PUBLIC_SERVER_URL = serverURL
-// NEXT_PUBLIC_SERVER_URL is optional for frontend
-// process.env.NEXT_PUBLIC_SERVER_URL = process.env.NODE_ENV === 'production' ? 'https://sub.dinasuvadu.com' : 'http://localhost:3001';
+
+const date = new Date()
+const year = date.getFullYear()
+const month = String(date.getMonth() + 1).padStart(2, '0')
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -42,7 +44,6 @@ const allowedOrigins =
       ? ['https://editor.dinasuvadu.com', 'https://sub.dinasuvadu.com']
       : ['http://localhost:3000', 'http://localhost:3001']
 
-// Debug: Log collections before initialization
 const collections = [Pages, Posts, Media, Categories, Users, Tags]
 collections.forEach((collection, index) => {
   if (!collection || !collection.slug) {
@@ -62,33 +63,16 @@ export default buildConfig({
     user: Users.slug,
     livePreview: {
       breakpoints: [
-        {
-          label: 'Mobile',
-          name: 'mobile',
-          width: 375,
-          height: 667,
-        },
-        {
-          label: 'Tablet',
-          name: 'tablet',
-          width: 768,
-          height: 1024,
-        },
-        {
-          label: 'Desktop',
-          name: 'desktop',
-          width: 1440,
-          height: 900,
-        },
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
     },
   },
   editor: defaultLexical,
   db: mongooseAdapter({
     url: process.env.MONGODB_URI || '',
-    connectOptions: {
-      // Add valid mongoose connect options here if needed
-    },
+    connectOptions: {},
   }),
   collections,
   cors: allowedOrigins,
@@ -98,7 +82,9 @@ export default buildConfig({
     ...plugins,
     s3Storage({
       collections: {
-        media: true,
+        media: {
+          prefix: `uploads/${year}/${month}`,
+        },
       },
       bucket: process.env.S3_BUCKET || '',
       config: {
