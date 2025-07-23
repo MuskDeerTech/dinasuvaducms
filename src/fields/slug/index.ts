@@ -33,15 +33,22 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
       beforeChange: [
         ({ data, value, operation }) => {
           const isUnlocked = !data?.slugLock
+          const customId = data?.customId ? `-${data.customId}` : ''
           if (isUnlocked && data?.[fieldToUse] && typeof data[fieldToUse] === 'string') {
-            // Use the manually entered value if it exists and differs from the default generated slug
-            const defaultSlug = formatSlug(data[fieldToUse])
-            const existingCustomId = data?.customId ? `-${data.customId}` : ''
-            // Only append customId during create operation or if not already present
-            if (operation === 'create' || !value?.includes(`-${data.customId}`)) {
-              return `${defaultSlug}${existingCustomId}`
+            // Handle manual slug input when unlocked
+            if (value && typeof value === 'string' && value.trim() !== '') {
+              // If user enters a custom slug, append customId only if not already present
+              if (!value.includes(customId)) {
+                return `${value}${customId}`
+              }
+              return value
             }
-            return value // Keep existing slug on update without re-adding customId
+            // If no manual input, generate slug from title and append customId on create
+            const defaultSlug = formatSlug(data[fieldToUse])
+            if (operation === 'create' || !value?.includes(customId)) {
+              return `${defaultSlug}${customId}`
+            }
+            return value
           }
           // If locked, return the existing value or let it be handled by default
           return value
