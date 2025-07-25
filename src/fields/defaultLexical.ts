@@ -41,15 +41,7 @@ const VideoBlock: Block = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Enter the URL of the video (e.g., YouTube, Vimeo).',
-      },
-    },
-    {
-      name: 'caption',
-      label: 'Caption',
-      type: 'text',
-      admin: {
-        description: 'Add a caption for the video.',
+        placeholder: 'Enter the URL of the video (e.g., YouTube, Vimeo).',
       },
     },
   ],
